@@ -12,6 +12,7 @@
 import rospy
 from sensor_msgs.msg   import LaserScan
 from geometry_msgs.msg import Twist
+from std_msgs.msg import Float64MultiArray
 
 NAME = "EMS"
 
@@ -26,11 +27,20 @@ def callback_scan(msg):
     obstacle_detected = msg.ranges [n]<1.0
     return
 
+#se agrega otra funcion
+def arm_move(msg):
+    rospy.loginfo("Datos recibidos: %s", msg.data)
+    return 
+
 def main():
     print("ROS BASICS - " + NAME)
     rospy.init_node("ros_basics")
     rospy.Subscriber("/hardware/scan", LaserScan, callback_scan)
     pub_cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+
+    #Aggre new subscriber for pose
+    rospy.Subscriber("/hardware/left_arm/goal_pose", Float64MultiArray, arm_move)
+    pub_larm_pose = rospy.Publisher("/hardware/left_arm/goal_pose", Float64MultiArray, queue_size=10)
     loop = rospy.Rate(10)
     
     global obstacle_detected
@@ -43,9 +53,18 @@ def main():
         # Use the 'obstacle_detected' variable to check if there is an obstacle. 
         # Publish the Twist message using the already declared publisher 'pub_cmd_vel'.
         msg_cmd_vel = Twist()
+        #Aggre new data in msg the pose
+        msg_la_pose = Float64MultiArray()
+
+        msg_la_pose.data = [0.0,0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        pub_larm_pose.publish(msg_la_pose) #Publish the menssage
+
         msg_cmd_vel.linear.x = 0 if obstacle_detected else 0.3
         pub_cmd_vel.publish(msg_cmd_vel)
         
+        if msg_cmd_vel.linear.x == 0:
+            msg_la_pose.data = [1.0416, -0.0001, 0.5003, -0.5000, 1.0999, -0.2880, 0.0001]
+            pub_larm_pose.publish(msg_la_pose)
         loop.sleep()
 
 
