@@ -63,7 +63,8 @@ def main():
         pub_cmd_vel.publish(msg_cmd_vel)
         
         if msg_cmd_vel.linear.x == 0:
-            msg_la_pose.data = [1.0416, -0.0001, 0.5003, -0.5000, 1.0999, -0.2880, 0.0001]
+            #msg_la_pose.data = [1.0416, -0.0001, 0.5003, -0.5000, 1.0999, -0.2880, 0.0001]
+            msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
             pub_larm_pose.publish(msg_la_pose)
         loop.sleep()
 
