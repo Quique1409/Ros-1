@@ -29,8 +29,12 @@ def callback_scan(msg):
 
 #se agrega otra funcion
 def arm_move(msg):
-    rospy.loginfo("Datos recibidos: %s", msg.data)
+    rospy.loginfo("Datos recibidos izq: %s", msg.data)
     return 
+#prueba de brazo derecho
+def arm_move_der(msg):
+    rospy.loginfo("Datos recibidos der: %s", msg.data)
+    return
 
 def main():
     print("ROS BASICS - " + NAME)
@@ -43,6 +47,12 @@ def main():
     pub_larm_pose = rospy.Publisher("/hardware/left_arm/goal_pose", Float64MultiArray, queue_size=10)
     loop = rospy.Rate(10)
     
+    #Se agrega otro suscriptor para la pose del brazo der
+    rospy.Subscriber("/hardware/right_arm/goal_pose", Float64MultiArray, arm_move_der)
+    pub_larm_pose_der = rospy.Publisher("/hardware/right_arm/goal_pose", Float64MultiArray, queue_size=10)
+    loop_der = rospy.Rate(10)
+
+
     global obstacle_detected
     obstacle_detected = False
     while not rospy.is_shutdown():
@@ -55,9 +65,13 @@ def main():
         msg_cmd_vel = Twist()
         #Aggre new data in msg the pose
         msg_la_pose = Float64MultiArray()
-
         msg_la_pose.data = [0.0,0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         pub_larm_pose.publish(msg_la_pose) #Publish the menssage
+
+        #se agrega el de der
+        msg_la_pose_der = Float64MultiArray()
+        msg_la_pose_der.data = [0.0,0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        pub_larm_pose_der.publish(msg_la_pose_der)
 
         msg_cmd_vel.linear.x = 0 if obstacle_detected else 0.3
         pub_cmd_vel.publish(msg_cmd_vel)
@@ -66,6 +80,10 @@ def main():
             #msg_la_pose.data = [1.0416, -0.0001, 0.5003, -0.5000, 1.0999, -0.2880, 0.0001]
             msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
             pub_larm_pose.publish(msg_la_pose)
+
+            #Derecho
+            msg_la_pose_der.data = [2.3, -0.69, 1.2, -1, 2.8, -2, 0.0063]
+            pub_larm_pose_der.publish(msg_la_pose_der)
         loop.sleep()
 
 
