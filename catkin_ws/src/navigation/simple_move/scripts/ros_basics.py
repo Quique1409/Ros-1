@@ -83,7 +83,7 @@ def main():
 
         #Aggre new data for head
         msg_head_pose = Float64MultiArray()
-        msg_head_pose.data = [0.0]
+        msg_head_pose.data = [0.0, 0.0]
         pub_head_pose.publish(msg_head_pose)
 
         msg_cmd_vel.linear.x = 0 if obstacle_detected else 0.3
@@ -99,7 +99,7 @@ def main():
             pub_larm_pose_der.publish(msg_la_pose_der)
 
             #head
-            msg_head_pose.data = [2.5]
+            msg_head_pose.data = [2.5, 1.0]
             pub_head_pose.publish(msg_head_pose)
         loop.sleep()
 
