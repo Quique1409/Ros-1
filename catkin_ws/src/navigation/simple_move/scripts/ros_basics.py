@@ -35,6 +35,9 @@ def arm_move(msg):
 def arm_move_der(msg):
     rospy.loginfo("Datos recibidos der: %s", msg.data)
     return
+def move_hand(msg):
+    rospy.loginfo("Datos de cabeza: %s", msg.data)
+    return
 
 def main():
     print("ROS BASICS - " + NAME)
@@ -53,7 +56,7 @@ def main():
     loop_der = rospy.Rate(10)
 
     #Aggre new subscriber for head goal_pose
-    rospy.Subscriber("/hardware/head/goal_pose", Float64MultiArray)
+    rospy.Subscriber("/hardware/head/goal_pose", Float64MultiArray, move_hand)
     pub_head_pose = rospy.Publisher("/hardware/head/goal_pose", Float64MultiArray, queue_size=10)
     loop_head = rospy.Rate(10)
 
