@@ -52,6 +52,11 @@ def main():
     pub_larm_pose_der = rospy.Publisher("/hardware/right_arm/goal_pose", Float64MultiArray, queue_size=10)
     loop_der = rospy.Rate(10)
 
+    #Aggre new subscriber for head goal_pose
+    rospy.Subscriber("/hardware/head/goal_pose", Float64MultiArray)
+    pub_head_pose = rospy.Publisher("/hardware/head/goal_pose", Float64MultiArray, queue_size=10)
+    loop_head = rospy.Rate(10)
+
 
     global obstacle_detected
     obstacle_detected = False
@@ -73,6 +78,11 @@ def main():
         msg_la_pose_der.data = [0.0,0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         pub_larm_pose_der.publish(msg_la_pose_der)
 
+        #Aggre new data for head
+        msg_head_pose = Float64MultiArray()
+        msg_head_pose.data = [0.0]
+        pub_head_pose.publish(msg_head_pose)
+
         msg_cmd_vel.linear.x = 0 if obstacle_detected else 0.3
         pub_cmd_vel.publish(msg_cmd_vel)
         
@@ -84,6 +94,10 @@ def main():
             #Derecho
             msg_la_pose_der.data = [2.3, -0.69, 1.2, -1, 2.8, -2, 0.0063]
             pub_larm_pose_der.publish(msg_la_pose_der)
+
+            #head
+            msg_head_pose.data = [2.5]
+            pub_head_pose.publish(msg_head_pose)
         loop.sleep()
 
 
