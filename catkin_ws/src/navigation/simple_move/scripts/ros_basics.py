@@ -116,6 +116,16 @@ def main():
                 msg_cmd_vel.linear.y = 0
                 state = "forward"
 
+            #Left arm
+            msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+            pub_larm_pose.publish(msg_la_pose)
+            #Right arm
+            msg_la_pose_der.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+            pub_larm_pose_der.publish(msg_la_pose_der)
+            #head
+            msg_head_pose.data = [2.5, 1.0]
+            pub_head_pose.publish(msg_head_pose)
+
         pub_cmd_vel.publish(msg_cmd_vel)
         loop.sleep()
 
