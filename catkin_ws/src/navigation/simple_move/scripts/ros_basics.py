@@ -111,9 +111,9 @@ def main():
                 
         elif state == "side":
             if obstacle_detected:
-                msg_cmd_vel.linear.y = 0.3
+                msg_cmd_vel.linear.z = 0.3
             else:
-                msg_cmd_vel.linear.y = 0
+                msg_cmd_vel.linear.z = 0
                 state = "forward"
 
         pub_cmd_vel.publish(msg_cmd_vel)
