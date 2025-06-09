@@ -24,7 +24,7 @@ def callback_scan(msg):
     # Set the 'obstacle_detected' variable with True or False, accordingly.
     #
     n = int((msg.angle_max - msg.angle_min)/msg.angle_increment/2)
-    obstacle_detected = msg.ranges [n] < 1.5 #modified
+    obstacle_detected = msg.ranges [n] < 1.0 #modified
     return
 
 #se agrega otra funcion
@@ -101,19 +101,19 @@ def main():
                 
         elif state == "side":
             if obstacle_detected:
-                msg_cmd_vel.linear.y = 0.5
+                msg_cmd_vel.linear.y = 0.3
             else:
                 msg_cmd_vel.linear.y = 0
                 state = "forward"
 
             #Left arm
-            msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+            msg_la_pose.data = [1.0, -0.005, 0.3, -0.5000, 1.062, -0.2880, 0.0007]
             pub_larm_pose.publish(msg_la_pose)
             #Right arm
-            msg_la_pose_der.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+            msg_la_pose_der.data = [1.0, -0.005, 0.3, -0.5000, 1.062, -0.2880, 0.0007]
             pub_larm_pose_der.publish(msg_la_pose_der)
             #head
-            msg_head_pose.data = [-2.0, 1.0]
+            msg_head_pose.data = [-1.0, 0.5]
             pub_head_pose.publish(msg_head_pose)
 
         pub_cmd_vel.publish(msg_cmd_vel)
