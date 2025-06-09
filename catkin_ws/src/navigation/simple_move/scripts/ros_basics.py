@@ -97,7 +97,7 @@ def main():
                 msg_cmd_vel.linear.x = 0.3 #Advance
             else:
                 msg_cmd_vel.linear.x = 0.0
-                state = "sade"
+                state = "side"
 
                 #Left arm
                 msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
