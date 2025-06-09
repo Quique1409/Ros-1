@@ -48,21 +48,23 @@ def main():
     #Aggre new subscriber for pose
     rospy.Subscriber("/hardware/left_arm/goal_pose", Float64MultiArray, arm_move)
     pub_larm_pose = rospy.Publisher("/hardware/left_arm/goal_pose", Float64MultiArray, queue_size=10)
-    loop = rospy.Rate(10)
     
     #Se agrega otro suscriptor para la pose del brazo der
     rospy.Subscriber("/hardware/right_arm/goal_pose", Float64MultiArray, arm_move_der)
     pub_larm_pose_der = rospy.Publisher("/hardware/right_arm/goal_pose", Float64MultiArray, queue_size=10)
-    loop_der = rospy.Rate(10)
 
     #Aggre new subscriber for head goal_pose
     rospy.Subscriber("/hardware/head/goal_pose", Float64MultiArray, move_hand)
     pub_head_pose = rospy.Publisher("/hardware/head/goal_pose", Float64MultiArray, queue_size=10)
-    loop_head = rospy.Rate(10)
 
+    loop = rospy.Rate(10)
 
     global obstacle_detected
     obstacle_detected = False
+
+    #Aggre new state forward
+    state = "forward"
+
     while not rospy.is_shutdown():
         #
         # TODO:
@@ -86,21 +88,35 @@ def main():
         msg_head_pose.data = [0.0, 0.0]
         pub_head_pose.publish(msg_head_pose)
 
-        msg_cmd_vel.linear.x = 0 if obstacle_detected else 0.3
-        pub_cmd_vel.publish(msg_cmd_vel)
+        #msg_cmd_vel.linear.x = 0 if obstacle_detected else 0.3
+        #pub_cmd_vel.publish(msg_cmd_vel)
         
-        if msg_cmd_vel.linear.x == 0:
-            #msg_la_pose.data = [1.0416, -0.0001, 0.5003, -0.5000, 1.0999, -0.2880, 0.0001]
-            msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
-            pub_larm_pose.publish(msg_la_pose)
+        #New logic the movimient
+        if state == "forward":
+            if not obstacle_detected:
+                msg_cmd_vel.linear.x = 0.3 #Advance
+            else:
+                msg_cmd_vel.linear.x = 0.0
+                state = "sade"
 
-            #Derecho
-            msg_la_pose_der.data = [2.3, -0.69, 1.2, -1, 2.8, -2, 0.0063]
-            pub_larm_pose_der.publish(msg_la_pose_der)
+                #Left arm
+                msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+                pub_larm_pose.publish(msg_la_pose)
+                #Right arm
+                msg_la_pose_der.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+                pub_larm_pose_der.publish(msg_la_pose_der)
+                #head
+                msg_head_pose.data = [2.5, 1.0]
+                pub_head_pose.publish(msg_head_pose)
+                
+        elif state == "side":
+            if obstacle_detected:
+                msg_cmd_vel.linear.y = 0.5
+            else:
+                msg_cmd_vel.linear.y = 0
+                state = "forward"
 
-            #head
-            msg_head_pose.data = [2.5, 1.0]
-            pub_head_pose.publish(msg_head_pose)
+        pub_cmd_vel.publish(msg_cmd_vel)
         loop.sleep()
 
 
