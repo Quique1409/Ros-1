@@ -94,7 +94,7 @@ def main():
         #New logic the movimient
         if state == "forward":
             if not obstacle_detected:
-                msg_cmd_vel.linear.x = 0.3 #Advance
+                msg_cmd_vel.linear.x = 0.5 #Advance
             else:
                 msg_cmd_vel.linear.x = 0.0
                 state = "side"
@@ -111,9 +111,9 @@ def main():
                 
         elif state == "side":
             if obstacle_detected:
-                msg_cmd_vel.linear.z = 0.3
+                msg_cmd_vel.linear.y = 0.5
             else:
-                msg_cmd_vel.linear.z = 0
+                msg_cmd_vel.linear.y = 0
                 state = "forward"
 
         pub_cmd_vel.publish(msg_cmd_vel)
