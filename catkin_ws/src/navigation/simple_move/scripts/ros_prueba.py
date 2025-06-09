@@ -109,6 +109,7 @@ def main():
                 #head
                 msg_head_pose.data = [2.5, 1.0]
                 pub_head_pose.publish(msg_head_pose)
+                
         elif state == "side":
             if obstacle_detected:
                 msg_cmd_vel.linear.y != 0
