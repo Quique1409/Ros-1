@@ -62,8 +62,6 @@ def main():
     global obstacle_detected
     obstacle_detected = False
 
-    #Aggre new state forward
-    state = "forward"
 
     while not rospy.is_shutdown():
         #
@@ -92,30 +90,19 @@ def main():
         msg_cmd_vel.linear.x = 0 if obstacle_detected else 0.3
         pub_cmd_vel.publish(msg_cmd_vel)
 
-        #New logic the movimient
-        if state == "forward":
-            if not obstacle_detected:
-                msg_cmd_vel.linear.x != 0 #Advance
-            else:
-                msg_cmd_vel.linear.x = 0.0
-                state = "sade"
+        if msg_cmd_vel.linear.x == 0:
 
-                #Left arm
-                msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
-                pub_larm_pose.publish(msg_la_pose)
-                #Right arm
-                msg_la_pose_der.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
-                pub_larm_pose_der.publish(msg_la_pose_der)
-                #head
-                msg_head_pose.data = [2.5, 1.0]
-                pub_head_pose.publish(msg_head_pose)
-                
-        elif state == "side":
-            if obstacle_detected:
-                msg_cmd_vel.linear.y != 0
-            else:
-                msg_cmd_vel.linear.y = 0
-                state = "forward"
+            #left arm
+            msg_la_pose.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+            pub_larm_pose.publish(msg_la_pose)
+
+            #Right arm
+            msg_la_pose_der.data = [1.8, -0.005, 0.8, -0.9000, 2.0999, -0.2880, 0.0007]
+            pub_larm_pose_der.publish(msg_la_pose_der)
+
+            #head
+            msg_head_pose.data = [2.5, 1.0]
+            pub_head_pose.publish(msg_head_pose)
         
         loop.sleep()
 
