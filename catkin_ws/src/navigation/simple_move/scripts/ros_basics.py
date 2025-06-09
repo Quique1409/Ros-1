@@ -111,7 +111,7 @@ def main():
                 
         elif state == "side":
             if obstacle_detected:
-                msg_cmd_vel.linear.y = 0.5
+                msg_cmd_vel.linear.y = 0.3
             else:
                 msg_cmd_vel.linear.y = 0
                 state = "forward"
